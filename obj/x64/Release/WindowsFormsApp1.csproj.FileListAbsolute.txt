@@ -28,7 +28,6 @@ C:\Users\viktor\Desktop\WindowsFormsApp1\bin\x64\Release\System.Security.Princip
 C:\Users\viktor\Desktop\WindowsFormsApp1\bin\x64\Release\ScreenRecorderLib.pdb
 C:\Users\viktor\Desktop\WindowsFormsApp1\bin\x64\Release\ScreenRecorderLib.xml
 C:\Users\viktor\Desktop\WindowsFormsApp1\obj\x64\Release\WindowsFormsApp1.csproj.AssemblyReference.cache
-C:\Users\viktor\Desktop\WindowsFormsApp1\obj\x64\Release\WindowsFormsApp1.Form1.resources
 C:\Users\viktor\Desktop\WindowsFormsApp1\obj\x64\Release\WindowsFormsApp1.Properties.Resources.resources
 C:\Users\viktor\Desktop\WindowsFormsApp1\obj\x64\Release\WindowsFormsApp1.csproj.GenerateResource.cache
 C:\Users\viktor\Desktop\WindowsFormsApp1\obj\x64\Release\WindowsFormsApp1.csproj.CoreCompileInputs.cache
@@ -36,3 +35,4 @@ C:\Users\viktor\Desktop\WindowsFormsApp1\obj\x64\Release\WindowsF.A1EEDF9B.Up2Da
 C:\Users\viktor\Desktop\WindowsFormsApp1\obj\x64\Release\WindowsFormsApp1.exe
 C:\Users\viktor\Desktop\WindowsFormsApp1\obj\x64\Release\WindowsFormsApp1.pdb
 C:\Users\viktor\Desktop\WindowsFormsApp1\bin\x64\Release\MaterialSkin.dll
+C:\Users\viktor\Desktop\WindowsFormsApp1\obj\x64\Release\WindowsFormsApp1.Form1.resources

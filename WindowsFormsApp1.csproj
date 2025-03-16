@@ -184,4 +184,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\5265761-200.png" />
+  </ItemGroup>
 </Project>

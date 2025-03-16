@@ -8,9 +8,15 @@ using ScreenRecorderLib;
 using NAudio.Wave;
 using MaterialSkin;
 using MaterialSkin.Controls;
+using System.Drawing.Drawing2D;
+using System.Drawing;
 
 namespace WindowsFormsApp1
 {
+
+
+
+
     public partial class Form1 : MaterialSkin.Controls.MaterialForm
     {
         private Recorder _recorder;
@@ -23,19 +29,21 @@ namespace WindowsFormsApp1
         public Form1()
         {
             InitializeComponent();
-            // Настраиваем менеджер скина
+
             var materialSkinManager = MaterialSkinManager.Instance;
             materialSkinManager.AddFormToManage(this);
             materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
 
             materialSkinManager.ColorScheme = new ColorScheme(
-        Primary.Red600,    // Основной цвет (Primary)
-        Primary.Red700,    // Тёмный основной цвет (DarkPrimary)
-        Primary.Red200,    // Светлый основной цвет (LightPrimary)
-        Accent.Pink200,    // Цвет акцента (Accent)
-        TextShade.WHITE    // Цвет текста
+                Primary.Blue200,    
+                Primary.Blue600,    
+                Primary.Blue200,    
+                Accent.LightBlue200,
+                TextShade.WHITE
             );
         }
+
+
 
         // ------------------ ЛОГИРОВАНИЕ ------------------
         private void Log(string message)
@@ -60,6 +68,7 @@ namespace WindowsFormsApp1
         {
             // Сразу отключаем кнопку Start, чтобы избежать повторного клика
             BtnStart.Enabled = false;
+            BtnStart.BackColor = System.Drawing.Color.LightGray;
 
             try
             {
@@ -133,7 +142,7 @@ namespace WindowsFormsApp1
         {
             try
             {
-                // Останавливаем ScreenRecorderLib
+                // Останавливаем запись видео
                 if (_recorder != null)
                 {
                     Log("Attempting to stop screen recording.");
@@ -146,12 +155,11 @@ namespace WindowsFormsApp1
                 else
                 {
                     Log("Stop called but _recorder is null.");
-                    MessageBox.Show("Recorder not active.", "Info",
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Recorder not active.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                // Останавливаем микрофон, если включён
+                // Останавливаем запись микрофона, если он включен
                 bool micRecorded = false;
                 string micFilePath = "";
                 if (chkMicrophone.Checked && _micCapture != null)
@@ -163,7 +171,6 @@ namespace WindowsFormsApp1
                     _micCapture = null;
                     Log("Microphone recording stopped.");
 
-                    // Сохраняем микрофон во временный WAV
                     string desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
                     string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
                     micFilePath = Path.Combine(desktop, $"CaptureMicrophone_{timestamp}.wav");
@@ -172,37 +179,43 @@ namespace WindowsFormsApp1
                     micRecorded = true;
                 }
 
-                // Если микрофон записывался, объединяем
+                // Перед началом слияния или финального сохранения,
+                // меняем статус на "Saving..." и устанавливаем курсор ожидания
+                lblStatus.Text = "Saving...";
+                Cursor = Cursors.WaitCursor;
+
+                // Если микрофон записывался, объединяем видео и микрофонное аудио в один файл
                 if (chkMicrophone.Checked && micRecorded)
                 {
                     MergeFiles(_videoPath, micFilePath);
                 }
                 else
                 {
-                    // Если микрофон не записывался, итоговый файл – ScreenRecorderLib
+                    // Если микрофон не использовался, итоговый файл – _videoPath
                     MessageBox.Show($"Recording stopped.\nFinal file saved to: {_videoPath}",
                                     "Info",
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Information);
                 }
-
-                // Включаем чекбоксы и кнопку Start
-                chkSystemAudio.Enabled = true;
-                chkMicrophone.Enabled = true;
-                BtnStart.Enabled = true;
             }
             catch (Exception ex)
             {
-                // Если ошибка при остановке, даём возможность заново запустить запись
-                BtnStart.Enabled = true;
-                chkSystemAudio.Enabled = true;
-                chkMicrophone.Enabled = true;
-
-                Log("Exception in BtnStop_Click: " + ex.Message + "\n" + ex.StackTrace);
                 MessageBox.Show("Error stopping recording:\n" + ex.Message,
                                 "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log("Exception in BtnStop_Click: " + ex.Message + "\n" + ex.StackTrace);
+            }
+            finally
+            {
+                // Возвращаем курсор в нормальный режим и включаем чекбоксы, а также кнопку Start
+                Cursor = Cursors.Default;
+                chkSystemAudio.Enabled = true;
+                chkMicrophone.Enabled = true;
+                BtnStart.Enabled = true;
+                lblStatus.Text = "Status";
+                BtnStart.BackColor = System.Drawing.Color.LightSkyBlue;
             }
         }
+
 
         // ------------------ Метод MergeFiles (FFmpeg) ------------------
         private void MergeFiles(string videoFile, string micWavFile)
