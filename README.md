@@ -1,0 +1,2 @@
+# ScreenyMinimal
+screen recorder windows
