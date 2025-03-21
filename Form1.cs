@@ -24,7 +24,7 @@ namespace WindowsFormsApp1
         private Recorder _recorder;
         private string _videoPath;
 
-        // Для микрофонной записи через NAudio
+        
         private WaveInEvent _micCapture;
         private List<byte> _micAudioBuffer = new List<byte>();
 
@@ -57,7 +57,7 @@ namespace WindowsFormsApp1
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // Регистрируем F1, F2 и F3
+            //  F1, F2 и F3
             RegisterHotKey(this.Handle, 1, MOD_NONE, (uint)Keys.F1); // Start
             RegisterHotKey(this.Handle, 2, MOD_NONE, (uint)Keys.F2); // Pause
             RegisterHotKey(this.Handle, 3, MOD_NONE, (uint)Keys.F3); // Stop
@@ -85,7 +85,7 @@ namespace WindowsFormsApp1
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            // Отмена регистрации горячих клавиш
+            
             UnregisterHotKey(this.Handle, 1);
             UnregisterHotKey(this.Handle, 2);
             UnregisterHotKey(this.Handle, 3);
@@ -107,18 +107,18 @@ namespace WindowsFormsApp1
 
                 if (File.Exists(logFile))
                 {
-                    // Получаем дату последней записи (изменения) файла
+                    
                     DateTime lastWrite = File.GetLastWriteTime(logFile);
                     if (lastWrite.Date < DateTime.Today)
                     {
-                        // Если лог не обновлялся сегодня, очищаем его
+                        
                         File.WriteAllText(logFile, string.Empty);
                     }
                 }
             }
             catch
             {
-                // Если возникнут ошибки при очистке, игнорируем их
+                
             }
         }
 
@@ -137,7 +137,7 @@ namespace WindowsFormsApp1
             }
             catch
             {
-                // Игнорируем ошибки логирования
+                
             }
         }
 
@@ -157,8 +157,7 @@ namespace WindowsFormsApp1
                 string videoFileName = $"CaptureScreenAudio_{timestamp}.mp4";
                 _videoPath = Path.Combine(desktopPath, videoFileName);
 
-                // Если пользователь включает микрофон, то IsAudioEnabled = true, 
-                // иначе IsAudioEnabled = chkSystemAudio.Checked
+                
                 bool audioEnabled = (chkSystemAudio.Checked || chkMicrophone.Checked);
 
                 var recOptions = new RecorderOptions
@@ -183,11 +182,11 @@ namespace WindowsFormsApp1
                 lblStatus.Text = "Recording...";
                 Log("Recording started successfully.");
 
-                // Отключаем чекбоксы
+                
                 chkSystemAudio.Enabled = false;
                 chkMicrophone.Enabled = false;
 
-                // Если пользователь выбрал микрофон, запускаем его через NAudio
+                
                 if (chkMicrophone.Checked)
                 {
                     _micAudioBuffer.Clear();
@@ -208,7 +207,7 @@ namespace WindowsFormsApp1
             }
             catch (Exception ex)
             {
-                // Если ошибка при старте записи, возвращаем доступ к кнопке Start
+                
                 BtnStart.Enabled = true;
 
                 Log("Exception in Record(): " + ex.Message + "\n" + ex.StackTrace);
@@ -222,7 +221,7 @@ namespace WindowsFormsApp1
         {
             try
             {
-                // Останавливаем запись видео
+                
                 if (_recorder != null)
                 {
                     Log("Attempting to stop screen recording.");
@@ -239,7 +238,7 @@ namespace WindowsFormsApp1
                     return;
                 }
 
-                // Останавливаем запись микрофона, если он включен
+                
                 bool micRecorded = false;
                 string micFilePath = "";
                 if (chkMicrophone.Checked && _micCapture != null)
@@ -259,19 +258,18 @@ namespace WindowsFormsApp1
                     micRecorded = true;
                 }
 
-                // Перед началом слияния или финального сохранения,
-                // меняем статус на "Saving..." и устанавливаем курсор ожидания
+
                 lblStatus.Text = "Saving...";
                 Cursor = Cursors.WaitCursor;
 
-                // Если микрофон записывался, объединяем видео и микрофонное аудио в один файл
+                
                 if (chkMicrophone.Checked && micRecorded)
                 {
                     MergeFiles(_videoPath, micFilePath);
                 }
                 else
                 {
-                    // Если микрофон не использовался, итоговый файл – _videoPath
+                    
                     MessageBox.Show($"Recording stopped.\nFinal file saved to: {_videoPath}",
                                     "Info",
                                     MessageBoxButtons.OK,
@@ -286,7 +284,7 @@ namespace WindowsFormsApp1
             }
             finally
             {
-                // Возвращаем курсор в нормальный режим и включаем чекбоксы, а также кнопку Start
+                
                 Cursor = Cursors.Default;
                 chkSystemAudio.Enabled = true;
                 chkMicrophone.Enabled = true;
@@ -306,15 +304,15 @@ namespace WindowsFormsApp1
                 string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
                 string finalFile = Path.Combine(desktop, $"FinalCapture_{timestamp}.mp4");
 
-                // Получаем полный путь к ffmpeg.exe относительно каталога приложения.
+                
                 string ffmpegPath = Path.Combine(Application.StartupPath, "ffmpeg", "ffmpeg.exe");
 
-                // Команда FFmpeg для объединения видео (с системным звуком) и микрофонного аудио.
+                
                 string arguments = $"-y -i \"{videoFile}\" -i \"{micWavFile}\" -filter_complex \"[0:a][1:a]amix=inputs=2:duration=longest\" -c:v copy -c:a aac \"{finalFile}\"";
 
                 ProcessStartInfo psi = new ProcessStartInfo
                 {
-                    FileName = ffmpegPath, // используем полный путь к ffmpeg.exe
+                    FileName = ffmpegPath, 
                     Arguments = arguments,
                     CreateNoWindow = true,
                     UseShellExecute = false,
@@ -328,7 +326,7 @@ namespace WindowsFormsApp1
                     process.WaitForExit();
                 }
 
-                // Удаляем временные файлы
+                
                 if (File.Exists(videoFile)) File.Delete(videoFile);
                 if (File.Exists(micWavFile)) File.Delete(micWavFile);
 
@@ -393,7 +391,7 @@ namespace WindowsFormsApp1
                 Log("Exception in SaveWavFile: " + ex.Message + "\n" + ex.StackTrace);
                 MessageBox.Show("Error saving WAV:\n" + ex.Message,
                                 "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                throw; // Можно повторно пробросить исключение, чтобы BtnStop_Click знал о проблеме
+                throw; 
             }
         }
 
@@ -436,7 +434,7 @@ namespace WindowsFormsApp1
         private void chkSystemAudio_CheckedChanged_1(object sender, EventArgs e)
         {
             Log("chkSystemAudio changed. Checked = " + chkSystemAudio.Checked);
-            // Если снята галочка с системного аудио, принудительно снимаем и галочку микрофона
+            
             if (!chkSystemAudio.Checked && chkMicrophone.Checked)
             {
                 chkMicrophone.Checked = false;
@@ -447,7 +445,7 @@ namespace WindowsFormsApp1
         private void chkMicrophone_CheckedChanged_1(object sender, EventArgs e)
         {
             Log("chkMicrophone changed. Checked = " + chkMicrophone.Checked);
-            // Если пользователь включает микрофон, принудительно включаем системное аудио
+            
             if (chkMicrophone.Checked)
             {
                 chkSystemAudio.Checked = true;
@@ -463,10 +461,10 @@ namespace WindowsFormsApp1
             {
                 if (!_isPaused)
                 {
-                    // Пытаемся приостановить запись
-                    _recorder.Pause(); // метод Pause() должен быть реализован в вашей версии ScreenRecorderLib
+                    
+                    _recorder.Pause(); 
                     if (_micCapture != null)
-                        _micCapture.StopRecording(); // приостанавливаем микрофонную запись
+                        _micCapture.StopRecording(); 
                     lblStatus.Text = "Paused";
                     btnPause.Text = "Resume";
                     _isPaused = true;
@@ -474,10 +472,10 @@ namespace WindowsFormsApp1
                 }
                 else
                 {
-                    // Пытаемся возобновить запись
-                    _recorder.Resume(); // метод Resume() должен быть реализован в вашей версии ScreenRecorderLib
+                    
+                    _recorder.Resume(); 
                     if (_micCapture != null)
-                        _micCapture.StartRecording(); // возобновляем запись с микрофона
+                        _micCapture.StartRecording(); 
                     lblStatus.Text = "Recording...";
                     btnPause.Text = "Pause";
                     _isPaused = false;
