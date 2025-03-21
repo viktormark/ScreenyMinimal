@@ -34,7 +34,10 @@
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.chkSystemAudio = new MaterialSkin.Controls.MaterialCheckBox();
             this.chkMicrophone = new MaterialSkin.Controls.MaterialCheckBox();
-            this.Pause = new System.Windows.Forms.Button();
+            this.btnPause = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // BtnStart
@@ -77,7 +80,7 @@
             this.lblStatus.BackColor = System.Drawing.Color.Transparent;
             this.lblStatus.Font = new System.Drawing.Font("Verdana", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.lblStatus.ForeColor = System.Drawing.Color.White;
-            this.lblStatus.Location = new System.Drawing.Point(34, 33);
+            this.lblStatus.Location = new System.Drawing.Point(23, 33);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(56, 18);
             this.lblStatus.TabIndex = 4;
@@ -90,7 +93,7 @@
             this.linkLabel1.BackColor = System.Drawing.Color.Transparent;
             this.linkLabel1.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkLabel1.LinkColor = System.Drawing.Color.DodgerBlue;
-            this.linkLabel1.Location = new System.Drawing.Point(148, 35);
+            this.linkLabel1.Location = new System.Drawing.Point(359, 366);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(33, 16);
             this.linkLabel1.TabIndex = 6;
@@ -103,6 +106,7 @@
             this.chkSystemAudio.AutoSize = true;
             this.chkSystemAudio.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.chkSystemAudio.Depth = 0;
+            this.chkSystemAudio.Font = new System.Drawing.Font("Roboto", 10F);
             this.chkSystemAudio.Location = new System.Drawing.Point(56, 262);
             this.chkSystemAudio.Margin = new System.Windows.Forms.Padding(0);
             this.chkSystemAudio.MouseLocation = new System.Drawing.Point(-1, -1);
@@ -133,21 +137,58 @@
             this.chkMicrophone.UseVisualStyleBackColor = false;
             this.chkMicrophone.CheckedChanged += new System.EventHandler(this.chkMicrophone_CheckedChanged_1);
             // 
-            // Pause
+            // btnPause
             // 
-            this.Pause.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.Pause.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.Pause.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.Pause.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DodgerBlue;
-            this.Pause.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Pause.Font = new System.Drawing.Font("Verdana", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.Pause.ForeColor = System.Drawing.Color.White;
-            this.Pause.Location = new System.Drawing.Point(56, 165);
-            this.Pause.Name = "Pause";
-            this.Pause.Size = new System.Drawing.Size(149, 66);
-            this.Pause.TabIndex = 10;
-            this.Pause.Text = "Pause";
-            this.Pause.UseVisualStyleBackColor = false;
+            this.btnPause.BackColor = System.Drawing.Color.LightSkyBlue;
+            this.btnPause.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnPause.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btnPause.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DodgerBlue;
+            this.btnPause.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPause.Font = new System.Drawing.Font("Verdana", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnPause.ForeColor = System.Drawing.Color.White;
+            this.btnPause.Location = new System.Drawing.Point(56, 165);
+            this.btnPause.Name = "btnPause";
+            this.btnPause.Size = new System.Drawing.Size(149, 66);
+            this.btnPause.TabIndex = 10;
+            this.btnPause.Text = "Pause";
+            this.btnPause.UseVisualStyleBackColor = false;
+            this.btnPause.Click += new System.EventHandler(this.btnPause_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(131, 35);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(74, 16);
+            this.label1.TabIndex = 11;
+            this.label1.Text = "Start - F1";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label2.ForeColor = System.Drawing.Color.White;
+            this.label2.Location = new System.Drawing.Point(228, 35);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(79, 16);
+            this.label2.TabIndex = 12;
+            this.label2.Text = "Pause - F2";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.BackColor = System.Drawing.Color.Transparent;
+            this.label3.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label3.ForeColor = System.Drawing.Color.White;
+            this.label3.Location = new System.Drawing.Point(336, 35);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(71, 16);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "Stop - F3";
             // 
             // Form1
             // 
@@ -156,9 +197,12 @@
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(420, 405);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.lblStatus);
-            this.Controls.Add(this.Pause);
+            this.Controls.Add(this.btnPause);
             this.Controls.Add(this.chkMicrophone);
             this.Controls.Add(this.chkSystemAudio);
             this.Controls.Add(this.BtnStop);
@@ -181,7 +225,10 @@
         private System.Windows.Forms.LinkLabel linkLabel1;
         private MaterialSkin.Controls.MaterialCheckBox chkSystemAudio;
         private MaterialSkin.Controls.MaterialCheckBox chkMicrophone;
-        private System.Windows.Forms.Button Pause;
+        private System.Windows.Forms.Button btnPause;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
     }
 }
 

@@ -10,6 +10,8 @@ using MaterialSkin;
 using MaterialSkin.Controls;
 using System.Drawing.Drawing2D;
 using System.Drawing;
+using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace WindowsFormsApp1
 {
@@ -26,12 +28,21 @@ namespace WindowsFormsApp1
         private WaveInEvent _micCapture;
         private List<byte> _micAudioBuffer = new List<byte>();
 
+        private const int WM_HOTKEY = 0x0312;
+        private const uint MOD_NONE = 0x0000;
+
+        [DllImport("user32.dll")]
+        public static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+
+        [DllImport("user32.dll")]
+        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
         public Form1()
         {
             InitializeComponent();
 
             var materialSkinManager = MaterialSkinManager.Instance;
-            materialSkinManager.AddFormToManage(this);
+            //materialSkinManager.AddFormToManage(this);
             materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
 
             materialSkinManager.ColorScheme = new ColorScheme(
@@ -41,8 +52,75 @@ namespace WindowsFormsApp1
                 Accent.LightBlue200,
                 TextShade.WHITE
             );
+            this.Load += Form1_Load;
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            // Регистрируем F1, F2 и F3
+            RegisterHotKey(this.Handle, 1, MOD_NONE, (uint)Keys.F1); // Start
+            RegisterHotKey(this.Handle, 2, MOD_NONE, (uint)Keys.F2); // Pause
+            RegisterHotKey(this.Handle, 3, MOD_NONE, (uint)Keys.F3); // Stop
+        }
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == WM_HOTKEY)
+            {
+                int id = m.WParam.ToInt32();
+                switch (id)
+                {
+                    case 1: // F1 – Start
+                        BtnStart_Click(this, EventArgs.Empty);
+                        break;
+                    case 2: // F2 – Pause
+                        btnPause_Click(this, EventArgs.Empty);
+                        break;
+                    case 3: // F3 – Stop
+                        BtnStop_Click(this, EventArgs.Empty);
+                        break;
+                }
+            }
+            base.WndProc(ref m);
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            // Отмена регистрации горячих клавиш
+            UnregisterHotKey(this.Handle, 1);
+            UnregisterHotKey(this.Handle, 2);
+            UnregisterHotKey(this.Handle, 3);
+            base.OnFormClosing(e);
+        }
+
+
+
+
+
+        private void ClearDailyLogFile()
+        {
+            try
+            {
+                string commonData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                string logFolder = Path.Combine(commonData, "MyScreenRecorderApp", "Logs");
+                Directory.CreateDirectory(logFolder);
+                string logFile = Path.Combine(logFolder, "ScreenRecorderLog.txt");
+
+                if (File.Exists(logFile))
+                {
+                    // Получаем дату последней записи (изменения) файла
+                    DateTime lastWrite = File.GetLastWriteTime(logFile);
+                    if (lastWrite.Date < DateTime.Today)
+                    {
+                        // Если лог не обновлялся сегодня, очищаем его
+                        File.WriteAllText(logFile, string.Empty);
+                    }
+                }
+            }
+            catch
+            {
+                // Если возникнут ошибки при очистке, игнорируем их
+            }
+        }
 
 
         // ------------------ ЛОГИРОВАНИЕ ------------------
@@ -64,11 +142,13 @@ namespace WindowsFormsApp1
         }
 
         // ------------------ КНОПКА START ------------------
-        private void BtnStart_Click(object sender, EventArgs e)
+        private async void BtnStart_Click(object sender, EventArgs e)
         {
-            // Сразу отключаем кнопку Start, чтобы избежать повторного клика
+
+            ClearDailyLogFile();
             BtnStart.Enabled = false;
             BtnStart.BackColor = System.Drawing.Color.LightGray;
+            await Task.Delay(1000);
 
             try
             {
@@ -342,17 +422,74 @@ namespace WindowsFormsApp1
             }
         }
 
+
+
+
+
+
+
+
+
+
+
+
         private void chkSystemAudio_CheckedChanged_1(object sender, EventArgs e)
         {
             Log("chkSystemAudio changed. Checked = " + chkSystemAudio.Checked);
+            // Если снята галочка с системного аудио, принудительно снимаем и галочку микрофона
+            if (!chkSystemAudio.Checked && chkMicrophone.Checked)
+            {
+                chkMicrophone.Checked = false;
+                Log("Auto-disabled Microphone because System Audio was disabled.");
+            }
         }
 
         private void chkMicrophone_CheckedChanged_1(object sender, EventArgs e)
         {
             Log("chkMicrophone changed. Checked = " + chkMicrophone.Checked);
-            // Если включили микрофон, можно автоматически включать системное аудио:
-            if (chkMicrophone.Checked) chkSystemAudio.Checked = true;
-            Log("Auto-enabled System Audio because Microphone was enabled.");
+            // Если пользователь включает микрофон, принудительно включаем системное аудио
+            if (chkMicrophone.Checked)
+            {
+                chkSystemAudio.Checked = true;
+                Log("Auto-enabled System Audio because Microphone was enabled.");
+            }
+        }
+
+        private bool _isPaused = false;
+
+        private void btnPause_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!_isPaused)
+                {
+                    // Пытаемся приостановить запись
+                    _recorder.Pause(); // метод Pause() должен быть реализован в вашей версии ScreenRecorderLib
+                    if (_micCapture != null)
+                        _micCapture.StopRecording(); // приостанавливаем микрофонную запись
+                    lblStatus.Text = "Paused";
+                    btnPause.Text = "Resume";
+                    _isPaused = true;
+                    Log("Recording paused.");
+                }
+                else
+                {
+                    // Пытаемся возобновить запись
+                    _recorder.Resume(); // метод Resume() должен быть реализован в вашей версии ScreenRecorderLib
+                    if (_micCapture != null)
+                        _micCapture.StartRecording(); // возобновляем запись с микрофона
+                    lblStatus.Text = "Recording...";
+                    btnPause.Text = "Pause";
+                    _isPaused = false;
+                    Log("Recording resumed.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("Exception in btnPause_Click: " + ex.Message + "\n" + ex.StackTrace);
+                MessageBox.Show("Error pausing/resuming recording:\n" + ex.Message,
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
