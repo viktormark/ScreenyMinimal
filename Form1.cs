@@ -56,7 +56,20 @@ namespace WindowsFormsApp1
         }
 
         private void Form1_Load(object sender, EventArgs e)
+
         {
+            try
+            {
+                var test = Recorder.CreateRecorder();
+            }
+            catch (DllNotFoundException ex)
+            {
+                MessageBox.Show("Some system components (like DirectX or Media Foundation) are missing.\n\n" +
+                    "Please install DirectX Runtime or Media Feature Pack.", "Missing Dependencies",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(1); 
+            }
+
             //  F1, F2 и F3
             RegisterHotKey(this.Handle, 1, MOD_NONE, (uint)Keys.F1); // Start
             RegisterHotKey(this.Handle, 2, MOD_NONE, (uint)Keys.F2); // Pause

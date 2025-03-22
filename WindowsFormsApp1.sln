@@ -5,8 +5,6 @@ VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApp1", "WindowsFormsApp1.csproj", "{4A937F09-EE74-4790-A92A-9B98D638817A}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ScreenyMinimal", "..\ScreenyMinimal\ScreenyMinimal.vdproj", "{174FCAD3-9C05-A23D-F0A8-F23E66B29E53}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{4A937F09-EE74-4790-A92A-9B98D638817A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4A937F09-EE74-4790-A92A-9B98D638817A}.Release|x64.ActiveCfg = Release|x64
 		{4A937F09-EE74-4790-A92A-9B98D638817A}.Release|x64.Build.0 = Release|x64
-		{174FCAD3-9C05-A23D-F0A8-F23E66B29E53}.Debug|Any CPU.ActiveCfg = Debug
-		{174FCAD3-9C05-A23D-F0A8-F23E66B29E53}.Debug|x64.ActiveCfg = Debug
-		{174FCAD3-9C05-A23D-F0A8-F23E66B29E53}.Release|Any CPU.ActiveCfg = Release
-		{174FCAD3-9C05-A23D-F0A8-F23E66B29E53}.Release|x64.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
