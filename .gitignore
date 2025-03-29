@@ -1,6 +1,7 @@
 .vs/
 bin/
 obj/
+bin/x64
 
 *.user
 *.suo
